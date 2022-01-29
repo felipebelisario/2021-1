@@ -1,5 +1,7 @@
 package profundidadeIterativa;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -7,6 +9,8 @@ public class NQueensProblem {
 
     public static int N;
     public static int maxDepth;
+
+    public Map<Integer,Integer> queensMap = new HashMap<Integer,Integer>();
 
     public static void main(String args[]) throws Exception {
         Scanner sc= new Scanner(System.in);
@@ -17,21 +21,22 @@ public class NQueensProblem {
         queenProblem.N = sc.nextInt();
         queenProblem.maxDepth = 0;
 
-        for (int i = 0; i < N + 1; i++) {
-            queenProblem.solveNQueens();
-
-            queenProblem.maxDepth++;
-        }
-
-    }
-
-    public boolean solveNQueens() {
         int board[][] = new int[N][N];
 
         for (int i = 0; i < N; i++) {
             int col = getRandomNumber(0, N);
             board[i][col] = 1;
+
+            queenProblem.queensMap.put(i, col);
         }
+
+        while( ! queenProblem.solveNQueens(board)) {
+            queenProblem.maxDepth++;
+        }
+
+    }
+
+    public boolean solveNQueens(int[][] board) {
 
         int currentDepth = 0;
         if (solveNQueensRecursion(board, 0, currentDepth) == false) {
@@ -49,26 +54,35 @@ public class NQueensProblem {
         return ThreadLocalRandom.current().nextInt(min, max);
     }
 
-    boolean solveNQueensRecursion(int board[][], int col, int currentDepth) {
+    boolean solveNQueensRecursion(int board[][], int row, int currentDepth) {
 
-        if (col >= N) {
+        if(isValidBoard(board)){
             return true;
+        }
+
+        if (row >= N) {
+            return false;
         }
 
         if(currentDepth >= maxDepth){
             return false;
         }
 
-        for (int i = 0; i < N; i++) {
-            if (isValidPosition(board, i, col)) {
-                board[i][col] = 1;
+        int colQueen = queensMap.get(row);
+        board[row][colQueen] = 0;
 
-                if (solveNQueensRecursion(board, col + 1, currentDepth + 1) == true)
-                    return true;
+        for (int col = 0; col < N; col++) {
 
-                board[i][col] = 0;
-            }
+            board[row][col] = 1;
+
+            if (solveNQueensRecursion(board, row + 1, currentDepth + 1) == true)
+                return true;
+
+            board[row][col] = 0;
+
         }
+
+        board[row][colQueen] = 1;
 
         return false;
     }
@@ -114,28 +128,28 @@ public class NQueensProblem {
 
                     int i, j;
 
-                    for (i = 0; i < 4; i++)
-                        if (board[row][i] == 1)
+                    for (i = 0; i < N; i++)
+                        if (board[row][i] == 1 && col != i)
                             return false;
 
-                    for (i = 0; i < 4; i++)
-                        if (board[i][col] == 1)
+                    for (i = 0; i < N; i++)
+                        if (board[i][col] == 1 && row != i)
                             return false;
 
                     for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
-                        if (board[i][j] == 1)
+                        if (board[i][j] == 1 && row != i && col != j)
                             return false;
 
-                    for (i = row, j = col; i >= 0 && j < 4; i--, j++)
-                        if (board[i][j] == 1)
+                    for (i = row, j = col; i >= 0 && j < N; i--, j++)
+                        if (board[i][j] == 1 && row != i && col != j)
                             return false;
 
-                    for (i = row, j = col; i < 4 && j < 4; i++, j++)
-                        if (board[i][j] == 1)
+                    for (i = row, j = col; i < N && j < N; i++, j++)
+                        if (board[i][j] == 1 && row != i && col != j)
                             return false;
 
-                    for (i = row, j = col; j >= 0 && i < 4; i++, j--)
-                        if (board[i][j] == 1)
+                    for (i = row, j = col; j >= 0 && i < N; i++, j--)
+                        if (board[i][j] == 1 && row != i && col != j)
                             return false;
 
                 }
