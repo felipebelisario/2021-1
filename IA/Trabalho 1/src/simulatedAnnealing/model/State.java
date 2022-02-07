@@ -31,8 +31,8 @@ public abstract class State {
                 if (i==j) continue;
                 if (q[i].getIndexOfX() == q[j].getIndexOfX()
                         || q[i].getIndexOfY() == q[j].getIndexOfY()
-                        || (q[i].getIndexOfX() - q[j].getIndexOfX() == q[i].getIndexOfY() - q[j].getIndexOfY()) // same diagonal
-                        || (q[i].getIndexOfX() - q[j].getIndexOfX() == q[j].getIndexOfY() - q[i].getIndexOfY())) { //same counter diagonal
+                        || (q[i].getIndexOfX() - q[j].getIndexOfX() == q[i].getIndexOfY() - q[j].getIndexOfY())
+                        || (q[i].getIndexOfX() - q[j].getIndexOfX() == q[j].getIndexOfY() - q[i].getIndexOfY())) {
                     cost++;
                 }
             }
